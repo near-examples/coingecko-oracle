@@ -123,16 +123,8 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
    * @from_datetime: string of datetime in ISO format, e.g. "2021-07-27T16:02:08.070557"
    * @return:
    *  {
-   *     "2021-07-27T16:02:08.000000": {
-   *      "ETH": 122.22,
-   *      "NEAR": 20.11,
-   *      ...
-   *     },
-   *     "2021-07-28T16:02:08.000000": {
-   *      "ETH": 129.22,
-   *      "NEAR": 21.11,
-   *      ...
-   *     },
+   *     "2021-07-27T16:02:08.000000": 122.22,
+   *     "2021-07-28T16:02:08.000000": 129.22,
    *     ...
    *  }
    */

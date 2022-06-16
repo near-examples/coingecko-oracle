@@ -81,10 +81,9 @@ test("adding data wrong account", async (t) => {
     }),
     { attachedDeposit: "400000000000000000000000" }
   );
-  t.log(result);
-  t.log(result.receiptFailureMessages.join("\n"));
+
   t.regex(
     result.receiptFailureMessages.join("\n"),
-    /unathourized to add data to smart contract/
+    /Account alice.test.near unathourized to add data to smart contract/
   );
 });
