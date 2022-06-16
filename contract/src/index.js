@@ -1,22 +1,15 @@
 import { assert } from "./helpers";
 
-import {
-  NearContract,
-  NearBindgen,
-  call,
-  view,
-  near,
-  UnorderedMap,
-  Vector,
-} from "near-sdk-js";
+import { NearContract, NearBindgen, call, view, near } from "near-sdk-js";
 
 const AUTHORIZED_CONTRACT = "coingecko-feed.idea404.testnet";
+const TEST_CONTRACT = "test.near";
 
 @NearBindgen
 class Contract extends NearContract {
   constructor() {
     super();
-    this.near_prices = new Map();
+    this.near_prices = {};
   }
 
   /**
@@ -31,13 +24,13 @@ class Contract extends NearContract {
   @call
   addPrices(data) {
     assert(
-      near.signerAccountId() === AUTHORIZED_CONTRACT,
+      near.signerAccountId() === AUTHORIZED_CONTRACT ||
+        near.signerAccountId() === TEST_CONTRACT,
       `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
     );
-    const fdata = JSON.parse(data);
-    for (const datetimeString in fdata) {
+    for (const datetimeString in data) {
       const datetime = new Date(datetimeString);
-      this.near_prices.set(datetime, fdata[datetimeString]);
+      this.near_prices[datetime] = data[datetimeString];
     }
   }
 
@@ -52,18 +45,8 @@ class Contract extends NearContract {
    *  }
    */
   @view
-  getPrices(from_datetime) {
-    assert(
-      from_datetime,
-      'from_datetime must be provided, e.g. "2021-07-27T16:02:08.000000"'
-    );
-    const fdatetime = new Date(from_datetime); // "01-01-1970 00:03:45" ->  1969-12-31T23:03:45.000Z
-    const result = new Map();
-    for (const datetime in this.prices) {
-        if (fdatetime <= datetime) {
-            result.set(datetime, this.prices[datetime]);
-        }
-    }
+  getPrices() {
+    const result = Object.assign({}, this.prices);
     return result;
   }
 }

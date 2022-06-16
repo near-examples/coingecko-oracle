@@ -64,11 +64,9 @@ test.afterEach(async (t) => {
 
 // TODO addPrices testing
 // TODO test when adding an existing timestamp
-// TODO test when adding a non existing symbol
-// TODO test when adding new symbola and new timestamp
 // TODO test for large numbers problems in JS
 
-test("adding data wrong account", async (t) => {
+test("adding data from wrong account", async (t) => {
   const { alice, jsvm, contract } = t.context.accounts;
 
   const result = await alice.callRaw(
@@ -86,4 +84,27 @@ test("adding data wrong account", async (t) => {
     result.receiptFailureMessages.join("\n"),
     /Account alice.test.near unathourized to add data to smart contract/
   );
+});
+
+test("adding data", async (t) => {
+  const { root, jsvm, contract } = t.context.accounts;
+
+  await root.call(
+    jsvm,
+    "call_js_contract",
+    encodeCall(contract.accountId, "addPrices", {
+      data: {
+        "1969-12-31T23:03:45.000Z": 111.11,
+        "1970-01-01T23:03:45.000Z": 116.11,
+        "1970-01-02T23:03:45.000Z": 126.11,
+      },
+    }),
+    { attachedDeposit: "400000000000000000000000" }
+  );
+
+  const result = await jsvm.view(
+    "view_js_contract",
+    encodeCall(contract.accountId, "getPrices", {})
+  );
+  t.log("result:", result);
 });

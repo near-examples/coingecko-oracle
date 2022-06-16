@@ -92,11 +92,12 @@ function signerAccountId() {
 
 var _class, _class2;
 const AUTHORIZED_CONTRACT = "coingecko-feed.idea404.testnet";
+const TEST_CONTRACT = "test.near";
 
 let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContract {
   constructor() {
     super();
-    this.near_prices = new Map();
+    this.near_prices = {};
   }
   /**
    * Adds price data to smart contract.
@@ -110,12 +111,11 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
 
 
   addPrices(data) {
-    assert(signerAccountId() === AUTHORIZED_CONTRACT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
-    const fdata = JSON.parse(data);
+    assert(signerAccountId() === AUTHORIZED_CONTRACT || signerAccountId() === TEST_CONTRACT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
 
-    for (const datetimeString in fdata) {
+    for (const datetimeString in data) {
       const datetime = new Date(datetimeString);
-      this.near_prices.set(datetime, fdata[datetimeString]);
+      this.near_prices[datetime] = data[datetimeString];
     }
   }
   /**
@@ -130,18 +130,8 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
    */
 
 
-  getPrices(from_datetime) {
-    assert(from_datetime, 'from_datetime must be provided, e.g. "2021-07-27T16:02:08.000000"');
-    const fdatetime = new Date(from_datetime); // "01-01-1970 00:03:45" ->  1969-12-31T23:03:45.000Z
-
-    const result = new Map();
-
-    for (const datetime in this.prices) {
-      if (fdatetime <= datetime) {
-        result.set(datetime, this.prices[datetime]);
-      }
-    }
-
+  getPrices() {
+    const result = Object.assign({}, this.prices);
     return result;
   }
 
