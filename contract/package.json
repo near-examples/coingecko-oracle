@@ -1,0 +1,23 @@
+{
+  "name": "gecko-price-saver",
+  "version": "1.0.0",
+  "description": "Save prices from CoinGecko on NEAR using near-sdk-js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "near-sdk build",
+    "deploy": "near js deploy --accountId idea404.testnet --base64File build/contract.base64 --deposit 0.1 --jsvm jsvm.idea404.testnet",
+    "test": "test:unit && test:integration",
+    "test:unit": "jest",
+    "test:integration": "ava --verbose"
+  },
+  "author": "Near Inc <hello@nearprotocol.com>",
+  "license": "Apache-2.0",    
+  "dependencies": {
+    "near-sdk-js": "^0.2.0"
+  },
+  "devDependencies": {
+    "ava": "^4.3.0",
+    "near-workspaces": "^2.0.0"
+  }
+}
