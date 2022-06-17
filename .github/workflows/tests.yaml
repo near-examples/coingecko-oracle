@@ -19,6 +19,6 @@ jobs:
       - name: Install contract dependencies
         run: cd contract && npm i 
       - name: Build contract
-        run: npm run build
+        run: cd contract && npm run build
       - name: Run contract tests
-        run: npm run tests
+        run: cd contract && npm run tests
