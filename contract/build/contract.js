@@ -91,8 +91,8 @@ function signerAccountId() {
 }
 
 var _class, _class2;
-const AUTHORIZED_CONTRACT = "coingecko-feed.idea404.testnet";
-const TEST_CONTRACT = "test.near";
+const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
+const TEST_ACCOUNT = "test.near";
 
 let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContract {
   constructor() {
@@ -111,7 +111,7 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
 
 
   addPrices(request_data) {
-    assert(signerAccountId() === AUTHORIZED_CONTRACT || signerAccountId() === TEST_CONTRACT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
+    assert(signerAccountId() === AUTHORIZED_ACCOUNT || signerAccountId() === TEST_ACCOUNT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
     this.near_prices = { ...this.near_prices,
       ...request_data["data"]
     };

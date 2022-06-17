@@ -2,8 +2,8 @@ import { assert } from "./helpers";
 
 import { NearContract, NearBindgen, call, view, near } from "near-sdk-js";
 
-const AUTHORIZED_CONTRACT = "coingecko-feed.idea404.testnet";
-const TEST_CONTRACT = "test.near";
+const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
+const TEST_ACCOUNT = "test.near";
 
 @NearBindgen
 class Contract extends NearContract {
@@ -24,8 +24,8 @@ class Contract extends NearContract {
   @call
   addPrices(request_data) {
     assert(
-      near.signerAccountId() === AUTHORIZED_CONTRACT ||
-        near.signerAccountId() === TEST_CONTRACT,
+      near.signerAccountId() === AUTHORIZED_ACCOUNT ||
+        near.signerAccountId() === TEST_ACCOUNT,
       `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
     );
     this.near_prices =  {...this.near_prices, ...request_data["data"]};
