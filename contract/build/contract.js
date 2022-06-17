@@ -110,10 +110,10 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
    */
 
 
-  addPrices(data) {
+  addPrices(request_data) {
     assert(signerAccountId() === AUTHORIZED_CONTRACT || signerAccountId() === TEST_CONTRACT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
     this.near_prices = { ...this.near_prices,
-      ...data["data"]
+      ...request_data["data"]
     };
   }
   /**

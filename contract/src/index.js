@@ -22,13 +22,13 @@ class Contract extends NearContract {
    *  }
    */
   @call
-  addPrices(data) {
+  addPrices(request_data) {
     assert(
       near.signerAccountId() === AUTHORIZED_CONTRACT ||
         near.signerAccountId() === TEST_CONTRACT,
       `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
     );
-    this.near_prices =  {...this.near_prices, ...data["data"]};
+    this.near_prices =  {...this.near_prices, ...request_data["data"]};
   }
 
   /**

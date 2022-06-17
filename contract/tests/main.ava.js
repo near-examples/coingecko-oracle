@@ -62,10 +62,6 @@ test.afterEach(async (t) => {
   });
 });
 
-// TODO addPrices testing
-// TODO test when adding an existing timestamp
-// TODO test for large numbers problems in JS
-
 test("adding data from wrong account", async (t) => {
   const { alice, jsvm, contract } = t.context.accounts;
 
@@ -188,6 +184,33 @@ test("adding data for existing timestamp", async (t) => {
 
   const expected = {
     "1969-12-31T23:03:45.000Z": 131.11,
+  };
+  t.deepEqual(result, expected);
+});
+
+test("adding large numbers", async (t) => {
+  const { root, jsvm, contract } = t.context.accounts;
+
+  const large_number = 2384762348723648237462231312321113.21321312313121231546431231122314474; // len 65 float
+
+  await root.call(
+    jsvm,
+    "call_js_contract",
+    encodeCall(contract.accountId, "addPrices", {
+      data : {
+        "1969-12-31T23:03:45.000Z": large_number,
+      },
+    }),
+    { attachedDeposit: "400000000000000000000000" }
+  );
+
+  const result = await jsvm.view(
+    "view_js_contract",
+    encodeCall(contract.accountId, "getPrices", {})
+  );
+
+  const expected = {
+    "1969-12-31T23:03:45.000Z": large_number,
   };
   t.deepEqual(result, expected);
 });
