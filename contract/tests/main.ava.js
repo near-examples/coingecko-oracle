@@ -64,6 +64,7 @@ test.afterEach(async (t) => {
 
 // TODO addPrices testing
 // TODO test when adding an existing timestamp
+// TODO test adding data twice
 // TODO test for large numbers problems in JS
 
 test("adding data from wrong account", async (t) => {
@@ -93,7 +94,7 @@ test("adding data", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data: {
+      data : {
         "1969-12-31T23:03:45.000Z": 111.11,
         "1970-01-01T23:03:45.000Z": 116.11,
         "1970-01-02T23:03:45.000Z": 126.11,
@@ -106,5 +107,11 @@ test("adding data", async (t) => {
     "view_js_contract",
     encodeCall(contract.accountId, "getPrices", {})
   );
-  t.log("result:", result);
+
+  const expected = {
+    '1969-12-31T23:03:45.000Z': 111.11,
+    '1970-01-01T23:03:45.000Z': 116.11,
+    '1970-01-02T23:03:45.000Z': 126.11,
+  };
+  t.deepEqual(result, expected);
 });

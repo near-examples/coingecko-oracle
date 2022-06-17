@@ -28,10 +28,7 @@ class Contract extends NearContract {
         near.signerAccountId() === TEST_CONTRACT,
       `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
     );
-    for (const datetimeString in data) {
-      const datetime = new Date(datetimeString);
-      this.near_prices[datetime] = data[datetimeString];
-    }
+    this.near_prices =  {...this.near_prices, ...data["data"]};
   }
 
   /**
@@ -46,7 +43,7 @@ class Contract extends NearContract {
    */
   @view
   getPrices() {
-    const result = Object.assign({}, this.near_prices);
+    const result = { ...this.near_prices };
     return result;
   }
 }
