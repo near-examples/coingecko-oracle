@@ -98,6 +98,8 @@ test("adding data", async (t) => {
     { attachedDeposit: "400000000000000000000000" }
   );
 
+  t.log(root.accountId);
+
   const result = await jsvm.view(
     "view_js_contract",
     encodeCall(contract.accountId, "getPrices", {})
