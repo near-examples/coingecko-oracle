@@ -1,5 +1,5 @@
 name: Tests
-on: 
+on:
   repository_dispatch:
     types: [tests-report]
   push:
@@ -14,8 +14,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Install Node
         uses: actions/setup-node@v2
+        node-version: 16
       - name: Install contract dependencies
-        run: cd contract && npm i 
+        run: cd contract && npm i
       - name: Build contract
         run: cd contract && npm run build
       - name: Run contract tests
