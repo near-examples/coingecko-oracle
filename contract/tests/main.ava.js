@@ -102,6 +102,7 @@ test("adding data", async (t) => {
     "view_js_contract",
     encodeCall(contract.accountId, "getPrices", {})
   );
+  t.log(result);
 
   const expected = {
     '1969-12-31T23:03:45.000Z': 111.11,
