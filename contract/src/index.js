@@ -46,7 +46,7 @@ class Contract extends NearContract {
    */
   @view
   getPrices() {
-    const result = Object.assign({}, this.prices);
+    const result = Object.assign({}, this.near_prices);
     return result;
   }
 }

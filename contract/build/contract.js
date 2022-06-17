@@ -131,7 +131,7 @@ let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContra
 
 
   getPrices() {
-    const result = Object.assign({}, this.prices);
+    const result = Object.assign({}, this.near_prices);
     return result;
   }
 
