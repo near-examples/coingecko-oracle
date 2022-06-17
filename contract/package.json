@@ -7,8 +7,7 @@
   "scripts": {
     "build": "near-sdk build",
     "deploy": "near js deploy --accountId idea404.testnet --base64File build/contract.base64 --deposit 0.1 --jsvm jsvm.idea404.testnet",
-    "test": "test:unit && test:integration",
-    "test:unit": "jest",
+    "test": "npm run test:integration",
     "test:integration": "ava --verbose"
   },
   "author": "Near Inc <hello@nearprotocol.com>",
