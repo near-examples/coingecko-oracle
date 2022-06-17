@@ -155,3 +155,39 @@ test("adding data twice", async (t) => {
   };
   t.deepEqual(result, expected);
 });
+
+test("adding data for existing timestamp", async (t) => {
+  const { root, jsvm, contract } = t.context.accounts;
+
+  await root.call(
+    jsvm,
+    "call_js_contract",
+    encodeCall(contract.accountId, "addPrices", {
+      data : {
+        "1969-12-31T23:03:45.000Z": 111.11,
+      },
+    }),
+    { attachedDeposit: "400000000000000000000000" }
+  );
+
+  await root.call(
+    jsvm,
+    "call_js_contract",
+    encodeCall(contract.accountId, "addPrices", {
+      data : {
+        "1969-12-31T23:03:45.000Z": 131.11,
+      },
+    }),
+    { attachedDeposit: "400000000000000000000000" }
+  );
+
+  const result = await jsvm.view(
+    "view_js_contract",
+    encodeCall(contract.accountId, "getPrices", {})
+  );
+
+  const expected = {
+    "1969-12-31T23:03:45.000Z": 131.11,
+  };
+  t.deepEqual(result, expected);
+});
