@@ -191,7 +191,7 @@ test("adding data for existing timestamp", async (t) => {
 test("adding large numbers", async (t) => {
   const { root, jsvm, contract } = t.context.accounts;
 
-  const large_number = 2384762348723648237462231312321113.21321312313121231546431231122314474; // len 65 float
+  const large_number = 2384762348723648237462231312321113.21321312313121231546431231122314474;
 
   await root.call(
     jsvm,
