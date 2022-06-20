@@ -121,7 +121,7 @@ test("adding data twice", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data : {
+      data: {
         "1969-12-31T23:03:45.000Z": 111.11,
         "1970-01-01T23:03:45.000Z": 116.11,
       },
@@ -133,7 +133,7 @@ test("adding data twice", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data : {
+      data: {
         "1970-01-02T23:03:45.000Z": 126.11,
         "1970-01-03T23:03:45.000Z": 136.11,
       },
@@ -147,9 +147,9 @@ test("adding data twice", async (t) => {
   );
 
   const expected = {
-    '1969-12-31T23:03:45.000Z': 111.11,
-    '1970-01-01T23:03:45.000Z': 116.11,
-    '1970-01-02T23:03:45.000Z': 126.11,
+    "1969-12-31T23:03:45.000Z": 111.11,
+    "1970-01-01T23:03:45.000Z": 116.11,
+    "1970-01-02T23:03:45.000Z": 126.11,
     "1970-01-03T23:03:45.000Z": 136.11,
   };
   t.deepEqual(result, expected);
@@ -162,7 +162,7 @@ test("adding data for existing timestamp", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data : {
+      data: {
         "1969-12-31T23:03:45.000Z": 111.11,
       },
     }),
@@ -173,7 +173,7 @@ test("adding data for existing timestamp", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data : {
+      data: {
         "1969-12-31T23:03:45.000Z": 131.11,
       },
     }),
@@ -200,7 +200,7 @@ test("adding large numbers", async (t) => {
     jsvm,
     "call_js_contract",
     encodeCall(contract.accountId, "addPrices", {
-      data : {
+      data: {
         "1969-12-31T23:03:45.000Z": large_number,
       },
     }),
