@@ -1,9 +1,9 @@
-name: Auto-Linter
+name: Auto-Formatter
 on:
   push:
 jobs:
   build:
-    name: Prettier Lint
+    name: Prettier Formatter
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -13,8 +13,8 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
       - name: Install Prettier
-        uses: actions/setup-prettier@v2
-      - run: npm install --save-dev --save-exact prettier
+        run: npm install --save-dev --save-exact prettier
+      - name: Auto-Format Repo
       - run: npx prettier --write .
       - name: Setup Git
         run: |
