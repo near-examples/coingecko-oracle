@@ -15,7 +15,7 @@ jobs:
       - name: Install Prettier
         run: npm install --save-dev --save-exact prettier
       - name: Auto-Format Repo
-      - run: npx prettier --write .
+        run: npx prettier --write .
       - name: Setup Git
         run: |
           git config user.name "GitHub Actions Bot"
