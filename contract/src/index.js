@@ -28,7 +28,7 @@ class Contract extends NearContract {
         near.signerAccountId() === TEST_ACCOUNT,
       `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
     );
-    this.near_prices =  {...this.near_prices, ...request_data["data"]};
+    this.near_prices = { ...this.near_prices, ...request_data["data"] };
   }
 
   /**
