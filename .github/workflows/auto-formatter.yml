@@ -13,7 +13,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
       - name: Install Prettier
-        run: npm install --save-dev --save-exact prettier
+        run: npm install -g prettier
       - name: Auto-Format Repo
         run: npx prettier --write .
       - name: Setup Git
