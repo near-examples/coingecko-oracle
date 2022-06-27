@@ -1,0 +1,27 @@
+name: Auto-Linter
+on:
+  push:
+jobs:
+  build:
+    name: Prettier Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Install Node
+        uses: actions/setup-node@v2
+      - name: Install Prettier
+        uses: actions/setup-prettier@v2
+      - run: npm install --save-dev --save-exact prettier
+      - run: npx prettier --write .
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Commit Auto-Linting
+        run: |
+          git add .
+          git commit -m "prettier linting"
+          git push
