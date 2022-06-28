@@ -15,7 +15,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
         with:
-            version: 17.7
+            version: 16.3
       - name: Install contract dependencies
         run: cd contract && npm i
       - name: Build contract
