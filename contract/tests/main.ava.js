@@ -3,17 +3,6 @@ import { Worker } from "near-workspaces";
 import { readFile } from "fs/promises";
 import test from "ava";
 
-// TODO: make this function part of the npm package when it is available
-function encodeCall(contract, method, args) {
-  return Buffer.concat([
-    Buffer.from(contract),
-    Buffer.from([0]),
-    Buffer.from(method),
-    Buffer.from([0]),
-    Buffer.from(JSON.stringify([args])),
-  ]);
-}
-
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
   const worker = await Worker.init();
@@ -21,27 +10,13 @@ test.beforeEach(async (t) => {
   // Prepare sandbox for tests, create accounts, deploy contracts, etx.
   const root = worker.rootAccount;
 
-  // Deploy the jsvm contract.
-  const jsvm = await root.createAndDeploy(
-    root.getSubAccount("jsvm").accountId,
-    "./node_modules/near-sdk-js/res/jsvm.wasm"
+  // Deploy the contract.
+  const cg_oracle = await root.createAndDeploy(
+    root.getSubAccount("cg-oracle").accountId,
+    "./build/main.wasm"
   );
-
-  // Deploy fungible token contract
-  const contract = await root.createSubAccount("simple-cg-oracle");
-  let ftContractBase64 = (await readFile("build/contract.base64")).toString();
-  await contract.call(
-    jsvm,
-    "deploy_js_contract",
-    Buffer.from(ftContractBase64, "base64"),
-    { attachedDeposit: "400000000000000000000000" }
-  );
-  await contract.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "init", ""),
-    { attachedDeposit: "400000000000000000000000" }
-  );
+  // Init the contract
+  await cg_oracle.call(cg_oracle, "init", {});
 
   // Create test accounts
   const alice = await root.createSubAccount("alice");
@@ -50,8 +25,7 @@ test.beforeEach(async (t) => {
   t.context.worker = worker;
   t.context.accounts = {
     root,
-    jsvm,
-    contract,
+    cg_oracle,
     alice,
   };
 });
@@ -63,16 +37,16 @@ test.afterEach(async (t) => {
 });
 
 test("adding data from wrong account", async (t) => {
-  const { alice, jsvm, contract } = t.context.accounts;
+  const { alice, cg_oracle } = t.context.accounts;
 
   const result = await alice.callRaw(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": 111.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
@@ -83,27 +57,24 @@ test("adding data from wrong account", async (t) => {
 });
 
 test("adding data", async (t) => {
-  const { root, jsvm, contract } = t.context.accounts;
+  const { root, cg_oracle } = t.context.accounts;
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": 111.11,
         "1970-01-01T23:03:45.000Z": 116.11,
         "1970-01-02T23:03:45.000Z": 126.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
   t.log(root.accountId);
 
-  const result = await jsvm.view(
-    "view_js_contract",
-    encodeCall(contract.accountId, "getPrices", {})
-  );
+  const result = await cg_oracle.view("getPrices");
   t.log(result);
 
   const expected = {
@@ -115,36 +86,33 @@ test("adding data", async (t) => {
 });
 
 test("adding data twice", async (t) => {
-  const { root, jsvm, contract } = t.context.accounts;
+  const { root, cg_oracle } = t.context.accounts;
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": 111.11,
         "1970-01-01T23:03:45.000Z": 116.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1970-01-02T23:03:45.000Z": 126.11,
         "1970-01-03T23:03:45.000Z": 136.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
-  const result = await jsvm.view(
-    "view_js_contract",
-    encodeCall(contract.accountId, "getPrices", {})
-  );
+  const result = await cg_oracle.view("getPrices");
 
   const expected = {
     "1969-12-31T23:03:45.000Z": 111.11,
@@ -156,34 +124,31 @@ test("adding data twice", async (t) => {
 });
 
 test("adding data for existing timestamp", async (t) => {
-  const { root, jsvm, contract } = t.context.accounts;
+  const { root, cg_oracle } = t.context.accounts;
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": 111.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": 131.11,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
-  const result = await jsvm.view(
-    "view_js_contract",
-    encodeCall(contract.accountId, "getPrices", {})
-  );
+  const result = await cg_oracle.view("getPrices");
 
   const expected = {
     "1969-12-31T23:03:45.000Z": 131.11,
@@ -192,25 +157,22 @@ test("adding data for existing timestamp", async (t) => {
 });
 
 test("adding large numbers", async (t) => {
-  const { root, jsvm, contract } = t.context.accounts;
+  const { root, cg_oracle } = t.context.accounts;
 
   const large_number = 2384762348723648237462231312321113.21321312313121231546431231122314474;
 
   await root.call(
-    jsvm,
-    "call_js_contract",
-    encodeCall(contract.accountId, "addPrices", {
+    cg_oracle,
+    "addPrices",
+    {
       data: {
         "1969-12-31T23:03:45.000Z": large_number,
       },
-    }),
+    },
     { attachedDeposit: "400000000000000000000000" }
   );
 
-  const result = await jsvm.view(
-    "view_js_contract",
-    encodeCall(contract.accountId, "getPrices", {})
-  );
+  const result = await cg_oracle.view("getPrices");
 
   const expected = {
     "1969-12-31T23:03:45.000Z": large_number,

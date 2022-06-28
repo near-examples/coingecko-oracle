@@ -4,6 +4,8 @@
 node_modules
 /.pnp
 .pnp.js
+yarn.lock
+near-sdk-js-develop
 
 # build
 /out
@@ -16,7 +18,7 @@ node_modules
 /coverage
 
 # production
-/build
+**/build
 
 # misc
 .DS_Store
