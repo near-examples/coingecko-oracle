@@ -7,7 +7,6 @@
   "scripts": {
     "build": "near-sdk build",
     "rebuild": "rm -rf node_modules && rm -rf build && npm i && npm run build",
-    "deploy": "near js deploy --accountId idea404.testnet --base64File build/contract.base64 --deposit 0.1 --jsvm jsvm.idea404.testnet",
     "test": "npm run test:integration",
     "test:integration": "ava --verbose"
   },
