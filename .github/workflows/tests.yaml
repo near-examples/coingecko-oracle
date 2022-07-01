@@ -1,13 +1,17 @@
-name: Tests
+name: CI
+
 on:
   repository_dispatch:
     types: [tests-report]
   push:
+
 jobs:
-  tests:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, macos-latest]
+  strategy:
+    matrix:
+      platform: [ubuntu-latest, macos-latest]
+
+  build-contract-dependencies:
+    name: Build Contract Dependencies
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout branch
@@ -18,8 +22,20 @@ jobs:
           node-version: "16"
       - name: Install contract dependencies
         run: cd contract && npm i
+
+  build-contract:
+    name: Build Contract
+    runs-on: ${{ matrix.platform }}
+    needs: [build-contract-dependencies]
+    steps:
       # TODO: uncomment when SDK JS new release is out
       # - name: Build contract
       #   run: cd contract && npm run build
-      - name: Run contract tests
+
+  test-contract:
+    name: Test Contract
+    runs-on: ${{ matrix.platform }}
+    needs: [build-contract]
+    steps:
+      - name: Run Contract Tests
         run: cd contract && npm run test
