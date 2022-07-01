@@ -2,11 +2,12 @@ import unittest
 from datetime import datetime
 
 from server.src.main import CGFeeder
+from server.tests.utils import TEST_ORACLE_ACCOUNT_NAME
 
 
 class TestCoinGecko(unittest.TestCase):
     def setUp(self) -> None:
-        self.cg = CGFeeder()
+        self.cg = CGFeeder(TEST_ORACLE_ACCOUNT_NAME)
 
     def tearDown(self) -> None:
         self.cg.close()

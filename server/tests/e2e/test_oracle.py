@@ -1,12 +1,17 @@
 import unittest
-from server.src.main import CGFeeder
 
-from server.tests.e2e.helpers import delete_account, deploy_contract
+import requests
+from server.src.main import CGFeeder
+from server.tests.utils import (
+    TEST_ORACLE_ACCOUNT_NAME, 
+    delete_account,
+    deploy_contract
+)
 
 
 class TestOracle(unittest.TestCase):
     def setUp(self) -> None:
-        self.oracle_account_id = deploy_contract("test.coingecko-feed.idea404.testnet")
+        self.oracle_account_id = deploy_contract(TEST_ORACLE_ACCOUNT_NAME)
         self.cg = CGFeeder(destination_account_id=self.oracle_account_id)
         self.url = "https://rpc.testnet.near.org"
 

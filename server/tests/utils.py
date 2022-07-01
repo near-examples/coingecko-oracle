@@ -1,5 +1,7 @@
 import subprocess
 
+TEST_ORACLE_ACCOUNT_NAME = "test.coingecko-feed.idea404.testnet"
+
 def deploy_contract(account_name: str) -> str:
     res = subprocess.call(['sh', './scripts/dev-deploy.sh', account_name]) 
     if res != 0:
