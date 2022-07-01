@@ -1,5 +1,4 @@
 import { assert } from "./helpers";
-
 import { NearContract, NearBindgen, call, view, near } from "near-sdk-js";
 
 const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
