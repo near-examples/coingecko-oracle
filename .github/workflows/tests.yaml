@@ -7,11 +7,8 @@ on:
 
 jobs:
   build-contract-dependencies:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, macos-latest]
     name: Build Contract Dependencies
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
@@ -24,7 +21,7 @@ jobs:
 
   build-contract:
     name: Build Contract
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     needs: [build-contract-dependencies]
     steps:
       - name: Build contract
@@ -34,7 +31,7 @@ jobs:
 
   test-contract:
     name: Test Contract
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     needs: [build-contract]
     steps:
       - name: Run Contract Tests
