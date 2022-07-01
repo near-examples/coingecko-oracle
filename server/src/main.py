@@ -1,4 +1,3 @@
-import argparse
 import json
 from base64 import b64encode
 from datetime import datetime
@@ -63,8 +62,11 @@ class CGFeeder:
         self.logger.info("CGFeeder closed")
 
 
-if "__name__" == "__main__":
-    dest = argparse.ArgumentParser()   # TODO
-    feeder = CGFeeder(destination_account=dest)
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--account_id", "-a", help="account_id of the oracle contract")
+    args = parser.parse_args()
+    feeder = CGFeeder(destination_account=args.account_id)
     feeder.gather_and_send()
     feeder.close()
