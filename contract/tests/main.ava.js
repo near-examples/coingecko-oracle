@@ -1,6 +1,6 @@
 import "ava";
 import { Worker } from "near-workspaces";
-import { readFile } from "fs/promises";
+import path from "path";
 import test from "ava";
 
 test.beforeEach(async (t) => {
@@ -13,7 +13,7 @@ test.beforeEach(async (t) => {
   // Deploy the contract.
   const cg_oracle = await root.createAndDeploy(
     root.getSubAccount("cg-oracle").accountId,
-    "./build/main.wasm"
+    path.join("build", "main.wasm")
   );
   // Init the contract
   await cg_oracle.call(cg_oracle, "init", {});
