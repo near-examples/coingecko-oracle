@@ -1,4 +1,3 @@
-from mmap import ACCESS_WRITE
 import subprocess
 
 def deploy_contract(account_name: str) -> str:

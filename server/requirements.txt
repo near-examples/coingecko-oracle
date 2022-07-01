@@ -1,0 +1,7 @@
+pycoingecko
+strcutlog
+requests
+datetime
+abse64
+json
+argparse
