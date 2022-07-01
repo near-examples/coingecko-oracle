@@ -8,5 +8,7 @@ def deploy_contract(account_name: str) -> str:
         raise Exception("dev-deploy.sh failed")
     return account_name
 
-def delete_account():
-    pass 
+def delete_account(account_name: str) -> None:
+    res = subprocess.call(['sh', './scripts/dev-delete.sh', account_name])
+    if res != 0:
+        raise Exception("dev-delete.sh failed") 
