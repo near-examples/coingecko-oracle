@@ -8,7 +8,7 @@
     "build": "near-sdk build",
     "rebuild": "rm -rf node_modules && rm -rf build && npm i && npm run build",
     "test": "npm run test:integration",
-    "test:integration": "ava --verbose"
+      "test:integration": "ava --verbose"
   },
   "author": "Near Inc <hello@nearprotocol.com>",
   "license": "Apache-2.0",
