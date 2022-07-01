@@ -28,8 +28,9 @@ jobs:
     runs-on: ${{ matrix.platform }}
     needs: [build-contract-dependencies]
     steps:
+      - name: Build contract
+        run: cd contract && echo "TODO"
       # TODO: uncomment when SDK JS new release is out
-      # - name: Build contract
       #   run: cd contract && npm run build
 
   test-contract:
