@@ -6,11 +6,10 @@ on:
   push:
 
 jobs:
-  strategy:
-    matrix:
-      platform: [ubuntu-latest, macos-latest]
-
   build-contract-dependencies:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
     name: Build Contract Dependencies
     runs-on: ${{ matrix.platform }}
     steps:
