@@ -1,0 +1,37 @@
+name: Fetch and Send CG Data
+
+on:
+  # TODO: uncomment when released
+  # schedule:
+  #   - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+env:
+  PB_KEY: ${{ secrets.PB_KEY }}
+  PR_KEY: ${{ secrets.PR_KEY }}
+
+jobs:
+  get-send-data:
+    name: Get and Send CG Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - name: Install NEAR CLI
+        run: npm install -g near-cli
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install Requirements
+        run: cd server && pip install -r requirements.txt
+      - name: Install JQ
+        uses: sergeysova/jq-action@v2
+      - name: Add Keys to Environment
+        run: sh scripts/add-keys-to-env.sh
+      - name: Get and Send CG Data
+        run: python -m server.src.main -o oracle.idea404.testnet

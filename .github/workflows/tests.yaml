@@ -39,6 +39,5 @@ jobs:
         run: cd server && pip install -r requirements.txt
       - name: Run Source API Test
         run: python -m unittest server.tests.integration.api.test_coingecko
-      # TODO: WIP
-      # - name: Run E2E Test
-      #   run: python -m unittest server.tests.e2e.test_oracle
+      - name: Run E2E Test
+        run: python -m unittest server.tests.e2e.test_oracle

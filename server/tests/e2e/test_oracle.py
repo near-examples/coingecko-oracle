@@ -1,42 +1,32 @@
 import json
+import subprocess
 import unittest
 from datetime import datetime
 
-import requests
 from server.src.main import CGFeeder
-from server.tests.utils import (
-    TEST_ORACLE_ACCOUNT_NAME,
-    delete_account,
-    deploy_contract
-)
+from server.src.utils import (FEED_ACCOUNT_ID, TEST_ORACLE_ACCOUNT_ID,
+                              delete_account, deploy_contract)
 
 
 class TestOracle(unittest.TestCase):
     def setUp(self) -> None:
-        self.oracle_account_id = deploy_contract(TEST_ORACLE_ACCOUNT_NAME)
-        self.cg = CGFeeder(destination_account_id=self.oracle_account_id)
+        self.oracle_account_id = TEST_ORACLE_ACCOUNT_ID
+        self.feeder_account_id = FEED_ACCOUNT_ID
+        self.oracle_account_id = deploy_contract(self.oracle_account_id, self.feeder_account_id)
+        self.cg = CGFeeder(self.oracle_account_id, self.feeder_account_id)
         self.url = "https://rpc.testnet.near.org"
 
     def tearDown(self) -> None:
-        delete_account(self.oracle_account_id)
         self.cg.close()
+        delete_account(self.oracle_account_id, self.cg.account_id)
 
     def test_oracle(self):
         self.cg.gather_and_send()
-        payload = json.dumps({
-            "jsonrpc": "2.0",
-            "id": "dontcare",
-            "method": "query",
-            "params": {
-                "request_type": "call_function",
-                "finality": "final",
-                "account_id": self.oracle_account_id,
-                "method_name": "getPrices",
-                "args_base64": ""
-            }
-        })
-        res = requests.post(self.url, headers={"Content-Type": "application/json"}, data=payload)
-        data = res.json()
+        output = subprocess.run([
+            "near", "view", self.oracle_account_id, "getPrices", "'{}'",
+        ], capture_output=True, shell=True, text=True)
+        data = self._extract_data_from_output_str(output.stdout)
+
         self.assertTrue(len(data) > 0)
         for key, value in data.items():
             self.assertTrue(isinstance(key, str))
@@ -46,3 +36,10 @@ class TestOracle(unittest.TestCase):
             self.assertTrue(dt.year, datetime.now().year)
             self.assertTrue(dt.month, datetime.now().month)
             self.assertTrue(dt.day, datetime.now().day)
+
+    def _extract_data_from_output_str(self, output_str: str) -> dict:
+        spl = output_str.split("\n")
+        str_data = spl[-2]
+        fstr_data = str_data.replace("'", '"')
+        data = json.loads(fstr_data)
+        return data

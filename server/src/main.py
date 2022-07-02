@@ -1,21 +1,20 @@
-import json
-from base64 import b64encode
 from datetime import datetime
+import subprocess
 
-import requests
 from pycoingecko import CoinGeckoAPI
 from structlog import get_logger
 
 
 class CGFeeder:
-    def __init__(self, destination_account_id: str):
-        self.cg = CoinGeckoAPI()
+    def __init__(self, destination_account_id: str, feed_account_id: str):
+        self.account_id = feed_account_id
         self.oracle_account_id = destination_account_id
+        self.cg = CoinGeckoAPI()
         self.rpc_url = "https://rpc.testnet.near.org"
         self.logger = get_logger()
         self.logger.info("CGFeeder initialized")
-        
-    def get_data(self) -> dict[str, dict[str, float]]:
+
+    def get_data(self) -> str:
         symbol_name = "near"
         try:
             self.logger.info(f"Getting price for {symbol_name} from CG")
@@ -24,34 +23,26 @@ class CGFeeder:
                 vs_currencies="usd",
                 include_last_updated_at="true",
             )
-            timestamp = datetime.fromtimestamp(result[symbol_name]["last_updated_at"])
-            return {"data": {timestamp.isoformat(): result[symbol_name]["usd"]}}
+            timestamp = datetime.fromtimestamp(
+                result[symbol_name]["last_updated_at"]
+            )
+            return '{"' + f"{timestamp.isoformat()}" + '":' + f'{result[symbol_name]["usd"]}' + '}'
         except Exception as ex:
             self.logger.error(ex)
             return {}
 
-    def send_data_to_contract(self, data: dict[str, dict[str, float]]):
-        self.logger.info("Sending price to SC")
+    def send_data_to_contract(self, data: str):
+        self.logger.info("Sending price to Oracle")
         self.logger.debug(f"{self.oracle_account_id} || {data}")
-        b64_data = b64encode(json.dumps(data).encode("utf-8"))
-        payload = json.dumps(
-            {
-                "jsonrpc": "2.0",
-                "id": "dontcare",
-                "method": "query",
-                "params": {
-                    "request_type": "call_function",
-                    "finality": "final",
-                    "account_id": self.oracle_account_id,
-                    "method_name": "addPrices",
-                    "args_base64": b64_data,
-                },
-            }
-        )
-        headers = {"Content-Type": "application/json"}
-        res = requests.post(self.rpc_url, headers=headers, data=payload)
-        self.logger.info(f"Price sent to SC. [Code: {res.status_code}]")
-        self.logger.debug(f"{res.text}")
+        str_data = "'" + '{"data":' + data + "}" + "'"
+        self.logger.debug(f"str_data: {str_data}")
+        try:
+            subprocess.run([
+                "near", "call", self.oracle_account_id, "addPrices", "--accountId", self.account_id, "--args", str_data
+            ], shell=True, check=True)
+            self.logger.debug("Price sent to Oracle")
+        except Exception as ex:
+            self.logger.exception(f"Failed to send price to Oracle: {ex}")
 
     def gather_and_send(self):
         near_price = self.get_data()
@@ -64,9 +55,12 @@ class CGFeeder:
 
 if __name__ == "__main__":
     import argparse
+    from server.src.utils import FEED_ACCOUNT_ID
     parser = argparse.ArgumentParser()
-    parser.add_argument("--account_id", "-a", help="account_id of the oracle contract")
+    parser.add_argument("--account_id", "-a", "-o",
+                        help="account_id of the oracle contract")
     args = parser.parse_args()
-    feeder = CGFeeder(destination_account=args.account_id)
+    feeder = CGFeeder(destination_account_id=args.account_id,
+                      feed_account_id=FEED_ACCOUNT_ID)
     feeder.gather_and_send()
     feeder.close()
