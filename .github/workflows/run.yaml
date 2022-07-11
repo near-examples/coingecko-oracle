@@ -31,6 +31,6 @@ jobs:
         env:
           PB_KEY: ${{ secrets.PB_KEY }}
           PR_KEY: ${{ secrets.PR_KEY }}
-        run: sh scripts/add-keys-to-env.sh
+        run: sh scripts/extract-env-keys.sh
       - name: Get and Send CG Data
         run: python -m server.src.main -o oracle.idea404.testnet

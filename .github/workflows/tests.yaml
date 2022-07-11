@@ -43,7 +43,7 @@ jobs:
         env:
           PB_KEY: ${{ secrets.PB_KEY }}
           PR_KEY: ${{ secrets.PR_KEY }}
-        run: sh scripts/add-keys-to-env.sh
+        run: sh scripts/extract-env-keys.sh
       - name: Run Source API Test
         run: python -m unittest server.tests.integration.api.test_coingecko
       - name: Run E2E Test
