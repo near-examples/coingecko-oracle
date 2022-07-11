@@ -14,9 +14,7 @@ class TestCoinGecko(unittest.TestCase):
         self.cg.close()
 
     def test_get_price(self):
-        data_str = self.cg.get_data()
-        self.assertTrue(len(data_str) > 0)
-        data = json.loads(data_str)
+        data = self.cg.get_coingecko_data()
         self.assertTrue(len(data) > 0)
         for key, value in data.items():
             self.assertTrue(isinstance(key, str))

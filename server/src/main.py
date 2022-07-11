@@ -1,7 +1,9 @@
-import subprocess
+import json
+import os
 from datetime import datetime
-from pathlib import Path
+from typing import Dict, List
 
+import requests
 from pycoingecko import CoinGeckoAPI
 from structlog import get_logger
 
@@ -15,7 +17,7 @@ class CGFeeder:
         self.logger = get_logger()
         self.logger.info("CGFeeder initialized")
 
-    def get_data(self) -> str:
+    def get_coingecko_data(self) -> Dict[str, float]:
         symbol_name = "near"
         try:
             self.logger.info(f"Getting price for {symbol_name} from CG")
@@ -27,7 +29,7 @@ class CGFeeder:
             timestamp = datetime.fromtimestamp(
                 result[symbol_name]["last_updated_at"]
             )
-            return '{"' + f"{timestamp.isoformat()}" + '":' + f'{result[symbol_name]["usd"]}' + '}'
+            return {timestamp.isoformat(): result[symbol_name]["usd"]}
         except Exception as ex:
             self.logger.error(ex)
             return {}
@@ -35,22 +37,54 @@ class CGFeeder:
     def send_data_to_contract(self, data: str):
         self.logger.info("Sending price to Oracle")
         self.logger.debug(f"{self.oracle_account_id} || {data}")
-        str_data = "'" + '{"data":' + data + "}" + "'"
+        data_dict = {"data": data}
+        self.logger.debug(f"data_dict: {data_dict}")
+        str_data = json.dumps(data_dict)
         self.logger.debug(f"str_data: {str_data}")
-        try:
-            keys_path = Path.home() / ".near-credentials" / "testnet" / (self.account_id + ".json")
-            subprocess.run([
-                "near", "call", self.oracle_account_id, "addPrices", 
-                "--accountId", self.account_id, "--keyPath", keys_path.as_posix(), "--args", str_data, "-v"
-            ], shell=True, check=True)
-            self.logger.debug("Price sent to Oracle")
-        except Exception as ex:
-            self.logger.exception(
-                f"Failed to send price to Oracle: {ex} stdout={ex.stdout} stderr={ex.stderr} cmd={ex.cmd}"
-            )
+        commands_list = [
+            "near", "call", self.oracle_account_id, "addPrices",
+            "--accountId", self.account_id,
+            "--args", "'" + str_data + "'"
+        ]
+        command = " ".join(commands_list)
+        self.logger.debug(f"command: {command}")
+        res = os.system(command)
+        if res != 0:
+            self.logger.error(f"Error sending data to Oracle")
+            return
+        self.logger.info("Price sent to Oracle")
+
+    def get_data_from_contract(self) -> List[Dict[str, float]]:
+        self.logger.info("Getting data from Oracle")
+        url = "https://rpc.testnet.near.org/"
+        payload = json.dumps({
+            "jsonrpc": "2.0",
+            "id": "dontcare",
+            "method": "query",
+            "params": {
+                "request_type": "call_function",
+                "finality": "final",
+                "account_id": self.oracle_account_id,
+                "method_name": "getPrices",
+                "args_base64": ""
+            }
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=payload)
+        self.logger.debug(f"response: {response}")
+        self.logger.debug(f"response.json(): {response.json()}")
+        assert "result" in response.json() and "result" in response.json()["result"], \
+            "Response does not contain result"
+        bytes_array = response.json()["result"]["result"]
+        data_str = bytearray(bytes_array).decode("utf-8")
+        data = json.loads(data_str)
+        self.logger.debug(f"data: {data}")
+        return data
 
     def gather_and_send(self):
-        near_price = self.get_data()
+        near_price = self.get_coingecko_data()
         self.send_data_to_contract(near_price)
 
     def close(self):

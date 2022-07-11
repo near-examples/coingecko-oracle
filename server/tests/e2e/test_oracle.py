@@ -1,5 +1,6 @@
 import json
 import subprocess
+import time
 import unittest
 from datetime import datetime
 
@@ -22,11 +23,8 @@ class TestOracle(unittest.TestCase):
 
     def test_oracle(self):
         self.cg.gather_and_send()
-        output = subprocess.run([
-            "near", "view", self.oracle_account_id, "getPrices", "'{}'",
-        ], capture_output=True, shell=True, text=True)
-        data = self._extract_data_from_output_str(output.stdout)
-
+        time.sleep(5)
+        data = self.cg.get_data_from_contract()
         self.assertTrue(len(data) > 0)
         for key, value in data.items():
             self.assertTrue(isinstance(key, str))
@@ -36,10 +34,3 @@ class TestOracle(unittest.TestCase):
             self.assertTrue(dt.year, datetime.now().year)
             self.assertTrue(dt.month, datetime.now().month)
             self.assertTrue(dt.day, datetime.now().day)
-
-    def _extract_data_from_output_str(self, output_str: str) -> dict:
-        spl = output_str.split("\n")
-        str_data = spl[-2]
-        fstr_data = str_data.replace("'", '"')
-        data = json.loads(fstr_data)
-        return data
