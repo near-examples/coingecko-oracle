@@ -1,3 +1,4 @@
+import json
 import unittest
 from datetime import datetime
 
@@ -13,11 +14,11 @@ class TestCoinGecko(unittest.TestCase):
         self.cg.close()
 
     def test_get_price(self):
-        data = self.cg.get_data()
+        data_str = self.cg.get_data()
+        self.assertTrue(len(data_str) > 0)
+        data = json.loads(data_str)
         self.assertTrue(len(data) > 0)
-        self.assertTrue("data" in data)
-        self.assertTrue(len(data["data"]) > 0)
-        for key, value in data["data"].items():
+        for key, value in data.items():
             self.assertTrue(isinstance(key, str))
             self.assertTrue(isinstance(value, float))
 
