@@ -6,10 +6,6 @@ on:
   #   - cron: "*/5 * * * *"
   workflow_dispatch:
 
-env:
-  PB_KEY: ${{ secrets.PB_KEY }}
-  PR_KEY: ${{ secrets.PR_KEY }}
-
 jobs:
   get-send-data:
     name: Get and Send CG Data
@@ -32,6 +28,9 @@ jobs:
       - name: Install JQ
         uses: sergeysova/jq-action@v2
       - name: Add Keys to Environment
+        env:
+          PB_KEY: ${{ secrets.PB_KEY }}
+          PR_KEY: ${{ secrets.PR_KEY }}
         run: sh scripts/add-keys-to-env.sh
       - name: Get and Send CG Data
         run: python -m server.src.main -o oracle.idea404.testnet

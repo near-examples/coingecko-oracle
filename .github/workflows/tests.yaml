@@ -37,6 +37,13 @@ jobs:
           python-version: "3.10"
       - name: Install Requirements
         run: cd server && pip install -r requirements.txt
+      - name: Install JQ
+        uses: sergeysova/jq-action@v2
+      - name: Add Keys to Environment
+        env:
+          PB_KEY: ${{ secrets.PB_KEY }}
+          PR_KEY: ${{ secrets.PR_KEY }}
+        run: sh scripts/add-keys-to-env.sh
       - name: Run Source API Test
         run: python -m unittest server.tests.integration.api.test_coingecko
       - name: Run E2E Test
