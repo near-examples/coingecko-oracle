@@ -1,5 +1,6 @@
-from datetime import datetime
 import subprocess
+from datetime import datetime
+from pathlib import Path
 
 from pycoingecko import CoinGeckoAPI
 from structlog import get_logger
@@ -37,8 +38,10 @@ class CGFeeder:
         str_data = "'" + '{"data":' + data + "}" + "'"
         self.logger.debug(f"str_data: {str_data}")
         try:
+            keys_path = Path.home() / ".near-credentials" / "testnet" / (self.account_id + ".json")
             subprocess.run([
-                "near", "call", self.oracle_account_id, "addPrices", "--accountId", self.account_id, "--args", str_data
+                "near", "call", self.oracle_account_id, "addPrices", 
+                "--accountId", self.account_id, "--keyPath", keys_path.as_posix(), "--args", str_data
             ], shell=True, check=True)
             self.logger.debug("Price sent to Oracle")
         except Exception as ex:
@@ -55,6 +58,7 @@ class CGFeeder:
 
 if __name__ == "__main__":
     import argparse
+
     from server.src.utils import FEED_ACCOUNT_ID
     parser = argparse.ArgumentParser()
     parser.add_argument("--account_id", "-a", "-o",
