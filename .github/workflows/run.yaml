@@ -1,9 +1,8 @@
 name: Fetch and Send CG Data
 
 on:
-  # TODO: uncomment when released
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  schedule:
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 jobs:
