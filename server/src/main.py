@@ -42,10 +42,12 @@ class CGFeeder:
             subprocess.run([
                 "near", "call", self.oracle_account_id, "addPrices", 
                 "--accountId", self.account_id, "--keyPath", keys_path.as_posix(), "--args", str_data, "-v"
-            ], shell=True, check=True, capture_output=True)
+            ], shell=True, check=True)
             self.logger.debug("Price sent to Oracle")
         except Exception as ex:
-            self.logger.exception(f"Failed to send price to Oracle: {ex}")
+            self.logger.exception(
+                f"Failed to send price to Oracle: {ex} stdout={ex.stdout} stderr={ex.stderr} cmd={ex.cmd}"
+            )
 
     def gather_and_send(self):
         near_price = self.get_data()
