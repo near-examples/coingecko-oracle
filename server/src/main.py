@@ -41,7 +41,7 @@ class CGFeeder:
             keys_path = Path.home() / ".near-credentials" / "testnet" / (self.account_id + ".json")
             subprocess.run([
                 "near", "call", self.oracle_account_id, "addPrices", 
-                "--accountId", self.account_id, "--keyPath", keys_path.as_posix(), "--args", str_data
+                "--accountId", self.account_id, "--keyPath", keys_path.as_posix(), "--args", str_data, "-v"
             ], shell=True, check=True)
             self.logger.debug("Price sent to Oracle")
         except Exception as ex:
