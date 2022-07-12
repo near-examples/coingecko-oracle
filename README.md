@@ -35,7 +35,7 @@ near view oracle.idea404.testnet getPrices ''
 
 ## Feeding Data to the Oracle
 
-Calling the `main.py` module in the `server` folder will push data to the oracle. It requires a parameter for the oracle account ID to which it will send the price data. This is run by the machine holding the keys for the `coingecko-feed.idea404.testnet` account as such from project root (you can also see how it is invoked by `run.yaml` in `.github/workflows`):
+Calling the `main.py` module in the `server` folder will push data to the oracle. It requires a parameter for the oracle account ID to which it will send the price data. This is run by the machine holding the keys for the `coingecko-feed.idea404.testnet` account as such from project root  with (you can also see how it is invoked by `run.yaml` in `.github/workflows` by a fixed time period with a cron schedule):
 
 ```sh
 python -m server.src.main -o oracle.idea404.testnet
