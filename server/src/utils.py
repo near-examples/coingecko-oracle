@@ -6,7 +6,7 @@ TEST_ORACLE_ACCOUNT_ID = "test.coingecko-feed.idea404.testnet"
 
 def deploy_contract(account_id: str, master_account_id: str) -> str:
     commands_list = [
-        'sh', './scripts/dev-deploy.sh', account_id, master_account_id
+        'bash', './scripts/dev-deploy.sh', account_id, master_account_id
     ]
     command = ' '.join(commands_list)
     res = os.system(command)
