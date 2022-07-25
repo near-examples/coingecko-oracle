@@ -1,3 +1,4 @@
+#!/bin/bash
 # should be called like this: ./dev-deploy.sh <new-account-name> <master-account-name>
 
 # check if account exists by calling RPC
