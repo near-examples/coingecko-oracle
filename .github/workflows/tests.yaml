@@ -18,9 +18,8 @@ jobs:
           node-version: "16"
       - name: Install contract dependencies
         run: cd contract && npm i
-      # TODO: uncomment when SDK JS new release is out
-      # - name: Build contract
-      #   run: cd contract && npm run build
+      - name: Build contract
+        run: cd contract && npm run build
       - name: Run Contract Tests
         run: cd contract && npm run test
 

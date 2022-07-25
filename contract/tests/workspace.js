@@ -12,7 +12,7 @@ test.beforeEach(async (t) => {
   // Deploy the contract.
   const cg_oracle = await root.createAndDeploy(
     root.getSubAccount("cg-oracle").accountId,
-    path.join("build", "main.wasm")
+    path.join("build", "contract.wasm")
   );
   // Init the contract
   await cg_oracle.call(cg_oracle, "init", {});
