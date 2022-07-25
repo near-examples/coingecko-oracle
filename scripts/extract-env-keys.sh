@@ -8,3 +8,9 @@ JSON_STRING=$( jq -n \
                   --arg prk "$PR_KEY" \
                   '{"account_id": "coingecko-feed.idea404.testnet", "public_key": $pbk, "private_key": $prk}' )
 echo $JSON_STRING > coingecko-feed.idea404.testnet.json
+# add empty keys for test.coingecko-feed.idea404.testnet.json
+JSON_STRING=$( jq -n \
+                  --arg pbk "" \
+                  --arg prk "" \
+                  '{"account_id": "test.coingecko-feed.idea404.testnet", "public_key": $pbk, "private_key": $prk}' )
+echo $JSON_STRING > test.coingecko-feed.idea404.testnet.json
