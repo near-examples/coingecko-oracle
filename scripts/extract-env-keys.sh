@@ -12,5 +12,5 @@ echo $JSON_STRING > coingecko-feed.idea404.testnet.json
 JSON_STRING=$( jq -n \
                   --arg pbk "" \
                   --arg prk "" \
-                  '{"account_id": "test.coingecko-feed.idea404.testnet", "public_key": $pbk, "private_key": $prk}' )
+                  '{"account_id": "test.coingecko-feed.idea404.testnet", "public_key": "ed25519:3THErKbiH7Ai68E3w5xcfUTySGDXPFyPMyezXjTP1R6j", "private_key": "ed25519:3THErKbiH7Ai68E3w5xcfUTySGDXPFyPMyezXjTP1R6j"}' )
 echo $JSON_STRING > test.coingecko-feed.idea404.testnet.json
