@@ -4,10 +4,9 @@ import { NearContract, NearBindgen, call, view, near } from "near-sdk-js";
 const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
 const TEST_ACCOUNT = "test.near";
 
-@NearBindgen
+@NearBindgen({})
 class Contract extends NearContract {
   constructor() {
-    super();
     this.near_prices = {};
   }
 
