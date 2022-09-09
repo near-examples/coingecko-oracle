@@ -434,6 +434,12 @@ var CurveType;
 
 const U64_MAX = 2n ** 64n - 1n;
 const EVICTED_REGISTER = U64_MAX - 1n;
+function log(...params) {
+  env.log(`${params.map(x => x === undefined ? 'undefined' : x) // Stringify undefined
+  .map(x => typeof x === 'object' ? JSON.stringify(x) : x) // Convert Objects to strings
+  .join(' ')}` // Convert to string
+  );
+}
 function signerAccountId() {
   env.signer_account_id(0);
   return env.read_register(0);
@@ -564,11 +570,12 @@ let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec
 
 
   addPrices({
-    request_data
+    data
   }) {
     assert(signerAccountId() === AUTHORIZED_ACCOUNT || signerAccountId() === TEST_ACCOUNT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
+    log(`Adding prices from ${signerAccountId()} to smart contract. Data: ${JSON.stringify(data)}`);
     this.near_prices = { ...this.near_prices,
-      ...request_data["data"]
+      ...data
     };
   }
   /**
@@ -583,7 +590,7 @@ let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec
    */
 
 
-  getPrices() {
+  getPrices({}) {
     return this.prices;
   }
 

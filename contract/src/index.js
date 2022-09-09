@@ -20,12 +20,10 @@ class Contract {
    *  }
    */
   @call({})
-  addPrices({ request_data }) {
-    assert(
-      near.signerAccountId() === AUTHORIZED_ACCOUNT || near.signerAccountId() === TEST_ACCOUNT, 
-      `Account ${near.signerAccountId()} unathourized to add data to smart contract.`
-    );
-    this.near_prices = { ...this.near_prices, ...request_data["data"] };
+  addPrices({ data }) {
+    assert(near.signerAccountId() === AUTHORIZED_ACCOUNT || near.signerAccountId() === TEST_ACCOUNT, `Account ${near.signerAccountId()} unathourized to add data to smart contract.`);
+    near.log(`Adding prices from ${near.signerAccountId()} to smart contract. Data: ${JSON.stringify(data)}`);
+    this.near_prices = { ...this.near_prices, ...data };
   }
 
   /**
@@ -39,7 +37,7 @@ class Contract {
    *  }
    */
   @view({})
-  getPrices() {
+  getPrices({}) {
     return this.prices;
   }
 }
