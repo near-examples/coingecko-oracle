@@ -52,7 +52,7 @@ test("adding data from wrong account", async (t) => {
   );
 });
 
-test.only("adding data", async (t) => {
+test("adding data", async (t) => {
   const { root, cg_oracle } = t.context.accounts;
 
   await root.call(

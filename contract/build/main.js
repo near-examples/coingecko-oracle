@@ -27,12 +27,6 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
 var PromiseResult;
 
 (function (PromiseResult) {
@@ -551,10 +545,18 @@ function NearBindgen({
   };
 }
 
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
 var _dec, _dec2, _dec3, _class, _class2;
 const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
 const TEST_ACCOUNT = "test.near";
-let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec(_class = (_class2 = class Contract {
+let Contract = (_dec = NearBindgen({}), _dec2 = call({
+  payableFunction: true
+}), _dec3 = view({}), _dec(_class = (_class2 = class Contract {
   constructor() {
     this.near_prices = {};
   }
@@ -591,7 +593,9 @@ let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec
 
 
   getPrices({}) {
-    return this.prices;
+    const prices = { ...this.near_prices
+    };
+    return prices;
   }
 
 }, (_applyDecoratedDescriptor(_class2.prototype, "addPrices", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "addPrices"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "getPrices", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "getPrices"), _class2.prototype)), _class2)) || _class);

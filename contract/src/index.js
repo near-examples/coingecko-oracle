@@ -1,5 +1,5 @@
+import { call, near, NearBindgen, view } from "near-sdk-js";
 import { assert } from "./helpers";
-import { NearBindgen, call, view, near } from "near-sdk-js";
 
 const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
 const TEST_ACCOUNT = "test.near";
@@ -19,7 +19,7 @@ class Contract {
    *    ...
    *  }
    */
-  @call({})
+  @call({ payableFunction: true })
   addPrices({ data }) {
     assert(near.signerAccountId() === AUTHORIZED_ACCOUNT || near.signerAccountId() === TEST_ACCOUNT, `Account ${near.signerAccountId()} unathourized to add data to smart contract.`);
     near.log(`Adding prices from ${near.signerAccountId()} to smart contract. Data: ${JSON.stringify(data)}`);
@@ -38,6 +38,7 @@ class Contract {
    */
   @view({})
   getPrices({}) {
-    return this.prices;
+    const prices = { ...this.near_prices };
+    return prices;
   }
 }
