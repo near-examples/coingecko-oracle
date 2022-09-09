@@ -5,6 +5,7 @@ TEST_ORACLE_ACCOUNT_ID = "test-acc.coingecko-feed.idea404.testnet"
 
 
 def deploy_contract(account_id: str, master_account_id: str) -> str:
+    delete_account(account_id, master_account_id)
     commands_list = [
         'sh', './scripts/dev-deploy.sh', account_id, master_account_id
     ]
