@@ -1,2 +1,6 @@
 DEFINE_NEAR_METHOD(addPrices)
 DEFINE_NEAR_METHOD(getPrices)
+<<<<<<< HEAD
+=======
+DEFINE_NEAR_METHOD(init)
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b

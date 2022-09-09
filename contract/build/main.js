@@ -33,6 +33,7 @@ function assert(condition, message) {
   }
 }
 
+<<<<<<< HEAD
 var PromiseResult;
 
 (function (PromiseResult) {
@@ -130,11 +131,30 @@ function padding(bits, chr = '=') {
       }
 
       return input.slice(0, end);
+=======
+function call(target, key, descriptor) {}
+function view(target, key, descriptor) {}
+function NearBindgen(target) {
+  return class extends target {
+    static _init() {
+      // @ts-ignore
+      let args = target.deserializeArgs();
+      let ret = new target(args); // @ts-ignore
+
+      ret.serialize();
+      return ret;
+    }
+
+    static _get() {
+      let ret = Object.create(target.prototype);
+      return ret;
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
     }
 
   };
 }
 
+<<<<<<< HEAD
 function normalize(fn) {
   if (typeof fn !== 'function') throw new Error('normalize fn should be function');
   return {
@@ -432,12 +452,15 @@ var CurveType;
   CurveType[CurveType["SECP256K1"] = 1] = "SECP256K1";
 })(CurveType || (CurveType = {}));
 
+=======
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
 const U64_MAX = 2n ** 64n - 1n;
 const EVICTED_REGISTER = U64_MAX - 1n;
 function signerAccountId() {
   env.signer_account_id(0);
   return env.read_register(0);
 }
+<<<<<<< HEAD
 function predecessorAccountId() {
   env.predecessor_account_id(0);
   return env.read_register(0);
@@ -445,6 +468,8 @@ function predecessorAccountId() {
 function attachedDeposit() {
   return env.attached_deposit();
 }
+=======
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
 function storageRead(key) {
   let ret = env.storage_read(key, 0);
 
@@ -454,14 +479,27 @@ function storageRead(key) {
     return null;
   }
 }
+<<<<<<< HEAD
 function currentAccountId() {
   env.current_account_id(0);
   return env.read_register(0);
 }
+=======
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
 function input() {
   env.input(0);
   return env.read_register(0);
 }
+<<<<<<< HEAD
+=======
+var PromiseResult;
+
+(function (PromiseResult) {
+  PromiseResult[PromiseResult["NotReady"] = 0] = "NotReady";
+  PromiseResult[PromiseResult["Successful"] = 1] = "Successful";
+  PromiseResult[PromiseResult["Failed"] = 2] = "Failed";
+})(PromiseResult || (PromiseResult = {}));
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
 function storageWrite(key, value) {
   let exist = env.storage_write(key, value, EVICTED_REGISTER);
 
@@ -472,6 +510,7 @@ function storageWrite(key, value) {
   return false;
 }
 
+<<<<<<< HEAD
 function call({
   privateFunction = false,
   payableFunction = false
@@ -550,6 +589,41 @@ const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
 const TEST_ACCOUNT = "test.near";
 let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec(_class = (_class2 = class Contract {
   constructor() {
+=======
+class NearContract {
+  deserialize() {
+    let state = storageRead("STATE");
+
+    if (state) {
+      Object.assign(this, JSON.parse(state));
+    } else {
+      throw new Error("Contract state is empty");
+    }
+  }
+
+  serialize() {
+    storageWrite("STATE", JSON.stringify(this));
+  }
+
+  static deserializeArgs() {
+    let args = input();
+    return JSON.parse(args || "{}");
+  }
+
+  static serializeReturn(ret) {
+    return JSON.stringify(ret);
+  }
+
+}
+
+var _class, _class2;
+const AUTHORIZED_ACCOUNT = "coingecko-feed.idea404.testnet";
+const TEST_ACCOUNT = "test.near";
+
+let Contract = NearBindgen(_class = (_class2 = class Contract extends NearContract {
+  constructor() {
+    super();
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
     this.near_prices = {};
   }
   /**
@@ -563,9 +637,13 @@ let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec
    */
 
 
+<<<<<<< HEAD
   addPrices({
     request_data
   }) {
+=======
+  addPrices(request_data) {
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
     assert(signerAccountId() === AUTHORIZED_ACCOUNT || signerAccountId() === TEST_ACCOUNT, `Account ${signerAccountId()} unathourized to add data to smart contract.`);
     this.near_prices = { ...this.near_prices,
       ...request_data["data"]
@@ -584,6 +662,7 @@ let Contract = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view({}), _dec
 
 
   getPrices() {
+<<<<<<< HEAD
     return this.prices;
   }
 
@@ -629,4 +708,41 @@ function addPrices() {
 }
 
 export { addPrices, getPrices };
+=======
+    const result = { ...this.near_prices
+    };
+    return result;
+  }
+
+}, (_applyDecoratedDescriptor(_class2.prototype, "addPrices", [call], Object.getOwnPropertyDescriptor(_class2.prototype, "addPrices"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "getPrices", [view], Object.getOwnPropertyDescriptor(_class2.prototype, "getPrices"), _class2.prototype)), _class2)) || _class;
+
+function init() {
+  Contract._init();
+}
+function getPrices() {
+  let _contract = Contract._get();
+
+  _contract.deserialize();
+
+  let args = _contract.constructor.deserializeArgs();
+
+  let ret = _contract.getPrices(args);
+  if (ret !== undefined) env.value_return(_contract.constructor.serializeReturn(ret));
+}
+function addPrices() {
+  let _contract = Contract._get();
+
+  _contract.deserialize();
+
+  let args = _contract.constructor.deserializeArgs();
+
+  let ret = _contract.addPrices(args);
+
+  _contract.serialize();
+
+  if (ret !== undefined) env.value_return(_contract.constructor.serializeReturn(ret));
+}
+
+export { addPrices, getPrices, init };
+>>>>>>> 9af30b70adc9f7310e776f5c4a41246b12da6b1b
 //# sourceMappingURL=main.js.map
