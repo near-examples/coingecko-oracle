@@ -1,7 +1,7 @@
 import os
 
 FEED_ACCOUNT_ID = "coingecko-feed.idea404.testnet"
-TEST_ORACLE_ACCOUNT_ID = "test-acc.coingecko-feed.idea404.testnet"
+TEST_ORACLE_ACCOUNT_ID = "testoracle.coingecko-feed.idea404.testnet"
 
 
 def deploy_contract(account_id: str, master_account_id: str) -> str:
