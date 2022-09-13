@@ -21,6 +21,7 @@ class Contract {
    */
   @call({ payableFunction: true })
   addPrices(request_data) {
+    near.log('addPrices() called, request_data:', request_data);
     assert(
       near.signerAccountId() === AUTHORIZED_ACCOUNT ||
       near.signerAccountId() === TEST_ACCOUNT,
@@ -41,8 +42,8 @@ class Contract {
    */
   @view({})
   getPrices() {
-    const result = { ...this.near_prices };
-    return result;
+    near.log('getPrices() called, this.near_prices:', this.near_prices);
+    return this.near_prices;
   }
 
 }
