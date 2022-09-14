@@ -1,5 +1,34 @@
-import "ava";
-import test from "./workspace.js";
+import { Worker } from 'near-workspaces';
+import test from 'ava';
+import path from "path";
+
+test.beforeEach(async (t) => {
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // Prepare sandbox for tests, create accounts, deploy contracts, etx.
+  const root = worker.rootAccount;
+
+  // Deploy the contract.
+  const cg_oracle = await root.devDeploy(path.join("build", "main.wasm"));
+
+  // Create test accounts
+  const alice = await root.createSubAccount("alice");
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = {
+    root,
+    cg_oracle,
+    alice,
+  };
+});
+
+test.afterEach(async (t) => {
+  await t.context.worker.tearDown().catch((error) => {
+    console.log("Failed tear down the worker:", error);
+  });
+});
 
 test("adding data from wrong account", async (t) => {
   const { alice, cg_oracle } = t.context.accounts;
