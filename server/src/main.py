@@ -54,7 +54,7 @@ class CGFeeder:
             return
         self.logger.info("Price sent to Oracle")
 
-    def get_data_from_contract(self) -> List[Dict[str, float]]:
+    def get_data_from_contract(self) -> Dict[str, float]:
         self.logger.info("Getting data from Oracle")
         url = "https://rpc.testnet.near.org/"
         payload = json.dumps({
