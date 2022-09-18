@@ -5,19 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "near-sdk build src/index.js build/main.wasm",
+    "build": "near-sdk-js build src/index.js build/main.wasm",
     "rebuild": "rm -rf node_modules && rm -rf package-lock.json && rm -rf build && npm i && npm run build",
     "test": "npm run test:integration",
-      "test:integration": "ava --verbose"
+    "test:integration": "ava --verbose"
   },
   "author": "Near Inc <hello@nearprotocol.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "lodash-es": "^4.17.21",
-    "near-sdk-js": "near/near-sdk-js#v0.4.0-2"
+    "near-sdk-js": "^0.5.0"
   },
   "devDependencies": {
     "ava": "^4.3.0",
-    "near-workspaces": "^2.0.0"
+    "near-workspaces": "^3.2.2"
   }
 }
