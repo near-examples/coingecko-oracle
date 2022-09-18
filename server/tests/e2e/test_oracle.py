@@ -1,5 +1,3 @@
-import json
-import subprocess
 import time
 import unittest
 from datetime import datetime
@@ -22,9 +20,9 @@ class TestOracle(unittest.TestCase):
     def test_oracle(self):
         prev_data = self.cg.get_data_from_contract()
         self.cg.gather_and_send()
-        time.sleep(5)
+        time.sleep(10)
         data = self.cg.get_data_from_contract()
-        self.assertTrue(len(data) == len(prev_data) + 1)
+        self.assertTrue(len(data) == len(prev_data) + 1, "Data not updated")
         for i, key, value in enumerate(data.items(), start=1):
             self.assertTrue(isinstance(key, str))
             self.assertTrue(isinstance(value, float))
