@@ -23,7 +23,9 @@ class TestOracle(unittest.TestCase):
         time.sleep(10)
         data = self.cg.get_data_from_contract()
         self.assertTrue(len(data) == len(prev_data) + 1, "Data not updated")
-        for i, key, value in enumerate(data.items(), start=1):
+        i = 0
+        for key, value in data.items():
+            i += 1
             self.assertTrue(isinstance(key, str))
             self.assertTrue(isinstance(value, float))
 
